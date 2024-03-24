@@ -24,10 +24,11 @@ Com uma interface minimalista e funcionalidades básicas, PyNote é perfeito par
 
 * Portabilidade: Sendo desenvolvido em Python, PyNote é altamente portátil e pode ser executado em diferentes plataformas, proporcionando acesso fácil às suas notas onde quer que você esteja.
 
+* Suporte a formatação de texto: Adicionar a capacidade de formatar o texto das notas, como negrito, itálico, sublinhado, entre outros, para tornar as notas mais expressivas e organizadas.
+
+
 
 ## Funcionalidades Futuras:
-
-* Suporte a formatação de texto: Adicionar a capacidade de formatar o texto das notas, como negrito, itálico, sublinhado, entre outros, para tornar as notas mais expressivas e organizadas.
 
 * Pesquisa de notas: Incorporar um recurso de pesquisa para que os usuários possam facilmente encontrar notas específicas com base em palavras-chave ou frases.
 
