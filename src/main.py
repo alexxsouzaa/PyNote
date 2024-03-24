@@ -51,8 +51,6 @@ class PyNote:
         self.__root.geometry('%dx%d+%d+%d' %
                              (self.__width, self.__height, left, top))
 
-        self.__root.minsize(width=300, height=300)
-
         # Configuração do Grid
         self.__root.grid_rowconfigure(0, weight=1)
         self.__root.grid_columnconfigure(0, weight=1)
@@ -90,6 +88,8 @@ class PyNote:
         self.__editMenu.add_command(label='Colar', command=self.__paste)
 
         self.__editMenu.add_separator()
+        
+        self.__editMenu.add_checkbutton(label='Itálico', onvalue=1, offvalue=0, variable='italico', command=self.__italic)
 
         self.__editMenu.add_checkbutton(label='Regular', onvalue=1, offvalue=0, variable='regular', command=self.__regular)
 
@@ -102,9 +102,10 @@ class PyNote:
 
     # Menu View
         self.__viewMenu.add_command(label='Temas', command=self.__theme)
+        self.__viewMenu.add_checkbutton(label='Desativar Quebra de linha automática', onvalue=1, offvalue=0, variable='quebra_linha', command=self.__lineBreak)
 
         # Adiciona o menu View no MenuBar
-        self.__menuBar.add_cascade(label='View', menu=self.__viewMenu)
+        self.__menuBar.add_cascade(label='Exibir', menu=self.__viewMenu)
 
     # Menu Ajuda
         self.__helpMenu.add_command(
@@ -114,15 +115,23 @@ class PyNote:
         self.__menuBar.add_cascade(label='Ajuda', menu=self.__helpMenu)
 
     # =================== Funções dos Menus ===================
-         # Atalho de teclado da função __newFile
+       
+        # Atalho de teclado da função __newFile
         self.__root.bind_all("<Control-n>", self.__newFile)
+        
+        # Atalho de teclado da função __newFile
+        self.__root.bind_all("<Control-o>", self.__openFile)
+        
+        # Atalho de teclado da função __newFile
+        self.__root.bind_all("<Control-s>", self.__saveFile)
+        
     # Funções do menu de Arquivo
     def __newFile(self, event=None):
         self.__root.title('Sem título - PyNote')
         self.__file = None
         self.__textArea.delete(1.0, END)
 
-    def __openFile(self):
+    def __openFile(self, event=None):
         self.__file = askopenfilename(defaultextension='.txt',
                                       filetypes=[('ALL Files', '*.*'),
                                                  ('Text Documents', '.txt')])
@@ -137,7 +146,7 @@ class PyNote:
             self.__textArea.insert(1.0, file.read())
             file.close()
 
-    def __saveFile(self):
+    def __saveFile(self, event=None):
         if self.__file == None:
             self.__file = asksaveasfilename(initialfile='Sem titulo', defaultextension='.txt', filetypes=[
                                             ('ALL Files', '*.*'), ('Text Documents', '*.txt')])
@@ -183,6 +192,18 @@ class PyNote:
             # Remove a TAG de Bold
             self.__textArea.tag_remove('bold', "sel.first", "sel.last")
 
+    def __italic(self):
+        valor = self.__editMenu.getvar('italico')
+        if valor == 1:
+            # Remove a TAG de Itálico
+            self.__textArea.tag_remove('italico', "1.0", 'end')
+            self.__textArea.tag_add('italico', "sel.first", "sel.last")
+            self.__textArea.tag_configure(
+                'italico', font=('Consolas', 12, 'italic'))
+        else:
+            # Remove a TAG de Itálico
+            self.__textArea.tag_remove('italico', "1.0", 'end')
+            
     def __regular(self):
         valor = self.__editMenu.getvar('regular')
         if valor == 1:
@@ -213,6 +234,13 @@ class PyNote:
 
     def __theme(self):
         ...
+        
+    def __lineBreak(self):
+        valor = self.__editMenu.getvar('quebra_linha')
+        if valor == 1:
+            self.__textArea.config(wrap='none')
+        else:
+            self.__textArea.config(wrap='word')
 
     # Funções do menu de Ajuda
     def __showAbout(self):
