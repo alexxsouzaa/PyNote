@@ -1,7 +1,17 @@
+<div align="center">
+   <img src="https://github.com/alexxsouzaa/PyNote/assets/132787362/f9c55219-8407-4a0c-a4d7-ec646294f17b" alt="PyNote">
+</div>
+
+
+
 # PyNote
 PyNote é um projeto de estudo e portfólio desenvolvido inteiramente em Python, dedicado a oferecer uma solução simples e eficaz para suas necessidades de anotações. Inspirado no bloco de notas clássico do Windows, PyNote proporciona uma experiência familiar e intuitiva para os usuários.
 
 Com uma interface minimalista e funcionalidades básicas, PyNote é perfeito para quem busca uma maneira rápida e descomplicada de fazer anotações, listas de tarefas, pensamentos rápidos e lembretes. Sua simplicidade o torna acessível para usuários de todos os níveis de habilidade em programação.
+
+<div align="center">
+   <img src="https://github.com/alexxsouzaa/PyNote/assets/132787362/85940551-588a-47a2-8c70-3b7e0f74e9b6" alt="Demo">
+</div>
 
 
 ## Principais características do PyNote:
