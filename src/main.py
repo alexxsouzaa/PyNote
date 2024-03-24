@@ -13,7 +13,7 @@ class PyNote:
     __width = 600
     __height = 450
     __textArea = Text(__root, padx=10, pady=10,
-                      wrap='word', font=('Consolas 12'))
+                      wrap='word', font=('Consolas', 12, 'normal'))
     __menuBar = Menu(__root, relief='flat')
     __fileMenu = Menu(__menuBar, tearoff=0)
     __editMenu = Menu(__menuBar, tearoff=0)
@@ -50,7 +50,7 @@ class PyNote:
 
         self.__root.geometry('%dx%d+%d+%d' %
                              (self.__width, self.__height, left, top))
-        
+
         self.__root.minsize(width=300, height=300)
 
         # Configuração do Grid
@@ -68,17 +68,18 @@ class PyNote:
 
     # =================== Menus ===================
     # Menu de Arquivo
-        self.__fileMenu.add_command(label='Novo', command=self.__newFile)
+        self.__fileMenu.add_command(label='Novo', accelerator="Ctrl+N",command=self.__newFile)
 
-        self.__fileMenu.add_command(label='Abrir', command=self.__openFile)
+        self.__fileMenu.add_command(label='Abrir...', accelerator="Ctrl+O", command=self.__openFile)
 
-        self.__fileMenu.add_command(label='Salvar', command=self.__saveFile)
+        self.__fileMenu.add_command(label='Salvar', accelerator="Ctrl+S",command=self.__saveFile)
 
         self.__fileMenu.add_separator()
 
         self.__fileMenu.add_command(
             label='Sair', command=self.__quitApplication)
 
+        # Adiciona o menu Arquivo no MenuBar
         self.__menuBar.add_cascade(label='Arquivo', menu=self.__fileMenu)
 
     # Menu Editar
@@ -88,22 +89,35 @@ class PyNote:
 
         self.__editMenu.add_command(label='Colar', command=self.__paste)
 
+        self.__editMenu.add_separator()
+
+        self.__editMenu.add_checkbutton(label='Regular', onvalue=1, offvalue=0, variable='regular', command=self.__regular)
+
+        self.__editMenu.add_checkbutton(label='Negrito', onvalue=1, offvalue=0, variable='negrito', command=self.__bold)
+        
+        self.__editMenu.add_checkbutton(label='Sublinhado', onvalue=1, offvalue=0, variable='sublinhado', command=self.__underline)
+        
+        # Adiciona o menu Editar no MenuBar
         self.__menuBar.add_cascade(label='Editar', menu=self.__editMenu)
 
-    # Menu Editar
+    # Menu View
         self.__viewMenu.add_command(label='Temas', command=self.__theme)
 
+        # Adiciona o menu View no MenuBar
         self.__menuBar.add_cascade(label='View', menu=self.__viewMenu)
 
     # Menu Ajuda
         self.__helpMenu.add_command(
             label='Sobre o aplicativo', command=self.__showAbout)
 
+        # Adiciona o menu Ajuda no MenuBar
         self.__menuBar.add_cascade(label='Ajuda', menu=self.__helpMenu)
 
     # =================== Funções dos Menus ===================
+         # Atalho de teclado da função __newFile
+        self.__root.bind_all("<Control-n>", self.__newFile)
     # Funções do menu de Arquivo
-    def __newFile(self):
+    def __newFile(self, event=None):
         self.__root.title('Sem título - PyNote')
         self.__file = None
         self.__textArea.delete(1.0, END)
@@ -112,35 +126,36 @@ class PyNote:
         self.__file = askopenfilename(defaultextension='.txt',
                                       filetypes=[('ALL Files', '*.*'),
                                                  ('Text Documents', '.txt')])
-        
+
         if self.__file == '':
             self.__file = None
         else:
             self.__root.title(os.path.basename(self.__file) + ' - PyNote')
             self.__textArea.delete(1.0, END)
-            
+
             file = open(self.__file, 'r', encoding='utf-8')
             self.__textArea.insert(1.0, file.read())
             file.close()
 
     def __saveFile(self):
         if self.__file == None:
-            self.__file = asksaveasfilename(initialfile='Sem titulo', defaultextension='.txt', filetypes=[('ALL Files', '*.*'), ('Text Documents', '*.txt')])
-            
+            self.__file = asksaveasfilename(initialfile='Sem titulo', defaultextension='.txt', filetypes=[
+                                            ('ALL Files', '*.*'), ('Text Documents', '*.txt')])
+
             if self.__file == '':
                 self.__file = None
             else:
                 file = open(self.__file, 'w', encoding='utf-8')
                 file.write(self.__textArea.get(1.0, END))
                 file.close()
-                
+
                 self.__root.title(os.path.basename(self.__file) + ' - PyNote')
-        
+
         else:
             file = open(self.__file, 'w')
             file.write(self.__textArea.get(1.0, END))
             file.close()
-            
+
     def __quitApplication(self):
         self.__root.quit()
 
@@ -154,7 +169,48 @@ class PyNote:
     def __paste(self):
         self.__textArea.event_generate('<<Paste>>')
 
+    def __bold(self):
+        valor = self.__menuBar.getvar('negrito')
+        
+        if valor == 1:
+            # Remove a TAG de Bold
+            self.__textArea.tag_remove('bold', "sel.first", "sel.last")
+            self.__textArea.tag_add('bold', "sel.first", "sel.last")
+            self.__textArea.tag_configure('bold', font=('Consolas', 12, 'bold'))
+            # Remove a TAG de Regular
+            self.__textArea.tag_remove('normal', "1.0", 'end')
+        else:
+            # Remove a TAG de Bold
+            self.__textArea.tag_remove('bold', "sel.first", "sel.last")
+
+    def __regular(self):
+        valor = self.__editMenu.getvar('regular')
+        if valor == 1:
+            # Remove a TAG de Regular
+            self.__textArea.tag_remove('normal', "1.0", 'end')
+            self.__textArea.tag_add('normal', "sel.first", "sel.last")
+            self.__textArea.tag_configure(
+                'normal', font=('Consolas', 12, 'normal'))
+            # Remove a TAG de Bold
+            self.__textArea.tag_remove('bold', "sel.first", "sel.last")
+        else:
+             # Remove a TAG de Regular
+            self.__textArea.tag_remove('normal', "1.0", 'end')
+
+    def __underline(self):
+        valor = self.__editMenu.getvar('sublinhado')
+        
+        if valor == 1:
+            # Remove a TAG de Sublinhado
+            self.__textArea.tag_remove('underline', "1.0", 'end')
+            self.__textArea.tag_add('underline', "1.0", 'end')
+            self.__textArea.tag_configure('underline', underline=True)
+        else:
+            # Remove a TAG de Sublinhado
+            self.__textArea.tag_remove('underline', "1.0", 'end')
+
     # Funções do menu de View
+
     def __theme(self):
         ...
 
